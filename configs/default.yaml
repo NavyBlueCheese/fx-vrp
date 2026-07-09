@@ -68,5 +68,21 @@ quality:
   # FX week: last Friday tick to first Sunday tick; gaps inside this window are weekend
   weekend_gap_min_hours: 24.0
 
+realized:
+  # baseline calendar-time sampling interval for RV (the standard bias/variance
+  # compromise against microstructure noise; justified by the signature plot)
+  grid_interval_s: 300
+  # grid intervals for the volatility signature plot, finest to coarsest
+  signature_intervals_s: [5, 10, 30, 60, 120, 300, 600, 1200, 1800]
+  # TSRV slow-scale subgrid count for real data (tests choose their own)
+  tsrv_subgrids: 30
+  # sparse interval used to proxy integrated variance in the kernel bandwidth rule
+  kernel_sparse_interval_s: 1200
+  # a day with fewer grid returns than this gets null estimators and a flag
+  min_returns_per_day: 36
+  # FX day boundary: the day labelled D covers (D-1 17:00, D 17:00] New York time
+  day_close_local: "17:00"
+  day_close_tz: "America/New_York"
+
 simulate:
   default_seed: 42
