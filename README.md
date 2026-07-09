@@ -12,7 +12,7 @@ gap, but the **gamma-weighted** gap
 
 so you can be exactly right about 30-day variance and still lose money. This project
 measures both objects on EUR/USD, which is the implied side from the CBOE EVZ index and FXE
-option chains, the realised side from Dukascopy tick data with real bid/ask spreads, 
+option chains, the realised side from Dukascopy tick data with real bid/ask spreads,
 and decomposes every trade's P&L into variance gap, discrete hedging error, option
 spread cost, spot spread cost, and carry, with the decomposition reconciled to the
 total as a unit test.
@@ -25,8 +25,8 @@ empirically optimal rehedge frequency) lands here at Phase 5.*
 | Phase | Deliverable | State |
 |-------|-------------|-------|
 | 0 | Data reconnaissance, track decision, conventions | done, see `docs/` |
-| 1 | Foundation: simulators, tick/rates/chain data layer, daily chain scraper | **current** |
-| 2 | Realised variance estimators, validated on simulated ground truth | - |
+| 1 | Foundation: simulators, tick/rates/chain data layer, daily chain scraper | done (`v0.1.0`) |
+| 2 | Realised variance estimators, validated on simulated ground truth | **current** |
 | 3 | Implied variance: MFIV, VIX replication, de-Americanization | - |
 | 4 | The VRP series: HAR forecasts, ex-ante vs ex-post | - |
 | 5 | Strategy, P&L attribution, the hedging-frequency study | - |
@@ -59,6 +59,7 @@ configs/default.yaml    every numeric assumption in the project, in one place
 docs/                   data availability, fixed conventions, ADRs, quality reports
 src/fxvrp/simulate/     GBM / Heston / Merton / microstructure ground-truth worlds
 src/fxvrp/data/         Dukascopy ticks, FRED & ECB rates, CBOE chain scraper
+src/fxvrp/realized/     RV / TSRV / realised kernel / bipower / BNS jump test / semivariance
 tests/                  every estimator validated against a world with a known answer
 scripts/                one entry point per pipeline step / paper figure
 ```
