@@ -107,5 +107,22 @@ implied:
   settlement_weekly_local: "16:00"   # PM-settled (SPXW, equity/ETF options)
   settlement_standard_local: "09:30" # AM-settled third-Friday index standards
 
+vrp:
+  # HAR heterogeneous lags in trading days (Corsi 2009): daily, weekly, monthly
+  har_lags: [1, 5, 22]
+  # walk-forward: expanding window, refit cadence and minimum training size
+  refit_every_days: 21
+  min_train_days: 300
+  # the VRP window: 30 calendar days on both legs (conventions.md rule 3)
+  forward_window_calendar_days: 30
+  # a forward window needs at least this fraction of its expected FX days
+  min_window_coverage: 0.6
+  # Newey-West bandwidth for stats on 30d-overlapping series (~2x22 trading days)
+  hac_maxlags: 44
+  # BNS test level for the continuous/jump split in HAR-RV-CJ
+  jump_alpha: 0.01
+  # annualisation basis (calendar), matching the implied leg
+  annualize_days: 365
+
 simulate:
   default_seed: 42

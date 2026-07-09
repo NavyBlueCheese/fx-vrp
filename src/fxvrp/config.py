@@ -104,6 +104,18 @@ class RealizedConfig:
 
 
 @dataclass(frozen=True)
+class VrpConfig:
+    har_lags: tuple[int, ...]
+    refit_every_days: int
+    min_train_days: int
+    forward_window_calendar_days: int
+    min_window_coverage: float
+    hac_maxlags: int
+    jump_alpha: float
+    annualize_days: int
+
+
+@dataclass(frozen=True)
 class SimulateConfig:
     default_seed: int
 
@@ -120,6 +132,7 @@ class Config:
     quality: QualityConfig
     implied: ImpliedConfig
     realized: RealizedConfig
+    vrp: VrpConfig
     simulate: SimulateConfig
 
 
@@ -194,6 +207,7 @@ def load_config(path: Path | None = None) -> Config:
     quality = _section(raw, "quality")
     implied = _section(raw, "implied")
     realized = _section(raw, "realized")
+    vrp = _section(raw, "vrp")
     simulate = _section(raw, "simulate")
 
     return Config(
@@ -264,6 +278,16 @@ def load_config(path: Path | None = None) -> Config:
             min_returns_per_day=_int(realized, "min_returns_per_day"),
             day_close_local=_str(realized, "day_close_local"),
             day_close_tz=_str(realized, "day_close_tz"),
+        ),
+        vrp=VrpConfig(
+            har_lags=_int_tuple(vrp, "har_lags"),
+            refit_every_days=_int(vrp, "refit_every_days"),
+            min_train_days=_int(vrp, "min_train_days"),
+            forward_window_calendar_days=_int(vrp, "forward_window_calendar_days"),
+            min_window_coverage=_float(vrp, "min_window_coverage"),
+            hac_maxlags=_int(vrp, "hac_maxlags"),
+            jump_alpha=_float(vrp, "jump_alpha"),
+            annualize_days=_int(vrp, "annualize_days"),
         ),
         simulate=SimulateConfig(default_seed=_int(simulate, "default_seed")),
     )

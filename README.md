@@ -27,8 +27,8 @@ empirically optimal rehedge frequency) lands here at Phase 5.*
 | 0 | Data reconnaissance, track decision, conventions | done, see `docs/` |
 | 1 | Foundation: simulators, tick/rates/chain data layer, daily chain scraper | done (`v0.1.0`) |
 | 2 | Realised variance estimators, validated on simulated ground truth | done (`v0.2.0`) |
-| 3 | Implied variance: MFIV, VIX replication, de-Americanization | **current** |
-| 4 | The VRP series: HAR forecasts, ex-ante vs ex-post | - |
+| 3 | Implied variance: MFIV, VIX replication, de-Americanization | done (`v0.3.0`) |
+| 4 | The VRP series: HAR forecasts, ex-ante vs ex-post | **current** |
 | 5 | Strategy, P&L attribution, the hedging-frequency study | - |
 
 **Track note:** the free historical FXE chain source evaluated in Phase 0 turned out
