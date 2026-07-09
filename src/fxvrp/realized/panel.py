@@ -46,6 +46,11 @@ PANEL_SCHEMA: dict[str, pl.DataType] = {
     "rs_plus": pl.Float64(),
     "rs_minus": pl.Float64(),
     "signed_jump": pl.Float64(),
+    # first/last in-window log mid: the 30-day aggregator uses consecutive-day
+    # (last, first) pairs to add weekend/holiday gap returns (conventions rule 5),
+    # which no single intraday window can see
+    "first_log_mid": pl.Float64(),
+    "last_log_mid": pl.Float64(),
     "flag_thin": pl.Boolean(),
 }
 
@@ -100,6 +105,8 @@ def build_day_row(
         "rs_plus": None,
         "rs_minus": None,
         "signed_jump": None,
+        "first_log_mid": float(prices[0]) if prices.size else None,
+        "last_log_mid": float(prices[-1]) if prices.size else None,
         "flag_thin": True,
     }
     if (
