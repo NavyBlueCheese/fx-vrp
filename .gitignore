@@ -1,5 +1,6 @@
-# data is never committed; `make data` reproduces it
-data/
+# data is never committed; `make data` reproduces it (root-anchored:
+# src/fxvrp/data is a code package, not data)
+/data/
 
 # assistant-local files, never published
 CLAUDE.md
