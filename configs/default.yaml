@@ -84,5 +84,28 @@ realized:
   day_close_local: "17:00"
   day_close_tz: "America/New_York"
 
+implied:
+  # constant-maturity target for the model-free implied variance
+  target_days: 30
+  # near-term expiry must be at least this far out (CBOE rolls to avoid
+  # settlement microstructure in the final week)
+  min_days_to_expiry: 7
+  # search horizon for the near/next term pair
+  max_days_to_expiry: 120
+  # a wing stops after this many consecutive zero-bid strikes (VIX white paper)
+  zero_bid_consecutive_stop: 2
+  # an expiry needs at least this many strikes in its strip to be usable;
+  # near-term FXE expiries routinely quote OTM wings zero-bid (observed
+  # 2026-07-08: the 8-day expiry has ITM quotes only), so term selection runs
+  # over usable expiries rather than listed ones
+  min_strip_strikes: 5
+  # CRR steps for American pricing / de-Americanization (Phase 0 study used 800;
+  # 500 is within 0.02% of it at our tenors and twice as fast)
+  binomial_steps: 500
+  # settlement times, local exchange time
+  settlement_tz: "America/New_York"
+  settlement_weekly_local: "16:00"   # PM-settled (SPXW, equity/ETF options)
+  settlement_standard_local: "09:30" # AM-settled third-Friday index standards
+
 simulate:
   default_seed: 42
