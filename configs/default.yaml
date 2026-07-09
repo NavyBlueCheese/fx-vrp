@@ -23,7 +23,8 @@ dukascopy:
   sample_end_date: "2020-03-31"
   max_retries: 3
   retry_backoff_s: 2.0
-  request_timeout_s: 30.0
+  # stress days (e.g. 2020-03) produce hour files that need well over 30s
+  request_timeout_s: 90.0
   # pause between hour-file requests; recon showed unthrottled access is rate-limited
   throttle_s: 0.15
 
