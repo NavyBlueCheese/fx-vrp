@@ -1,4 +1,4 @@
-# The FX variance risk premium
+# The FX variance risk premium (on-going)
 
 **Is the FX variance risk premium compensation for jump/crash risk or for diffusive
 risk — and, separately, can it actually be harvested once discrete delta-hedging error
