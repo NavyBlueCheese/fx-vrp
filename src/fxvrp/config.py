@@ -80,6 +80,17 @@ class QualityConfig:
 
 
 @dataclass(frozen=True)
+class RealizedConfig:
+    grid_interval_s: int
+    signature_intervals_s: tuple[int, ...]
+    tsrv_subgrids: int
+    kernel_sparse_interval_s: int
+    min_returns_per_day: int
+    day_close_local: str
+    day_close_tz: str
+
+
+@dataclass(frozen=True)
 class SimulateConfig:
     default_seed: int
 
@@ -94,6 +105,7 @@ class Config:
     cboe: CboeConfig
     chain_cleaning: ChainCleaningConfig
     quality: QualityConfig
+    realized: RealizedConfig
     simulate: SimulateConfig
 
 
@@ -134,6 +146,15 @@ def _str_tuple(section: dict[str, Any], key: str) -> tuple[str, ...]:
     return tuple(value)
 
 
+def _int_tuple(section: dict[str, Any], key: str) -> tuple[int, ...]:
+    value = section[key]
+    if not isinstance(value, list) or not all(
+        isinstance(item, int) and not isinstance(item, bool) for item in value
+    ):
+        raise TypeError(f"config key {key!r} must be a list of integers")
+    return tuple(value)
+
+
 def _section(raw: dict[str, Any], key: str) -> dict[str, Any]:
     value = raw[key]
     if not isinstance(value, dict):
@@ -157,6 +178,7 @@ def load_config(path: Path | None = None) -> Config:
     cboe = _section(raw, "cboe")
     cleaning = _section(raw, "chain_cleaning")
     quality = _section(raw, "quality")
+    realized = _section(raw, "realized")
     simulate = _section(raw, "simulate")
 
     return Config(
@@ -207,6 +229,15 @@ def load_config(path: Path | None = None) -> Config:
             max_plausible_spread_pips=_float(quality, "max_plausible_spread_pips"),
             max_gap_report_s=_float(quality, "max_gap_report_s"),
             weekend_gap_min_hours=_float(quality, "weekend_gap_min_hours"),
+        ),
+        realized=RealizedConfig(
+            grid_interval_s=_int(realized, "grid_interval_s"),
+            signature_intervals_s=_int_tuple(realized, "signature_intervals_s"),
+            tsrv_subgrids=_int(realized, "tsrv_subgrids"),
+            kernel_sparse_interval_s=_int(realized, "kernel_sparse_interval_s"),
+            min_returns_per_day=_int(realized, "min_returns_per_day"),
+            day_close_local=_str(realized, "day_close_local"),
+            day_close_tz=_str(realized, "day_close_tz"),
         ),
         simulate=SimulateConfig(default_seed=_int(simulate, "default_seed")),
     )
