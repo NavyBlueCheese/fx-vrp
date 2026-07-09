@@ -80,6 +80,19 @@ class QualityConfig:
 
 
 @dataclass(frozen=True)
+class ImpliedConfig:
+    target_days: int
+    min_days_to_expiry: int
+    max_days_to_expiry: int
+    zero_bid_consecutive_stop: int
+    min_strip_strikes: int
+    binomial_steps: int
+    settlement_tz: str
+    settlement_weekly_local: str
+    settlement_standard_local: str
+
+
+@dataclass(frozen=True)
 class RealizedConfig:
     grid_interval_s: int
     signature_intervals_s: tuple[int, ...]
@@ -105,6 +118,7 @@ class Config:
     cboe: CboeConfig
     chain_cleaning: ChainCleaningConfig
     quality: QualityConfig
+    implied: ImpliedConfig
     realized: RealizedConfig
     simulate: SimulateConfig
 
@@ -178,6 +192,7 @@ def load_config(path: Path | None = None) -> Config:
     cboe = _section(raw, "cboe")
     cleaning = _section(raw, "chain_cleaning")
     quality = _section(raw, "quality")
+    implied = _section(raw, "implied")
     realized = _section(raw, "realized")
     simulate = _section(raw, "simulate")
 
@@ -229,6 +244,17 @@ def load_config(path: Path | None = None) -> Config:
             max_plausible_spread_pips=_float(quality, "max_plausible_spread_pips"),
             max_gap_report_s=_float(quality, "max_gap_report_s"),
             weekend_gap_min_hours=_float(quality, "weekend_gap_min_hours"),
+        ),
+        implied=ImpliedConfig(
+            target_days=_int(implied, "target_days"),
+            min_days_to_expiry=_int(implied, "min_days_to_expiry"),
+            max_days_to_expiry=_int(implied, "max_days_to_expiry"),
+            zero_bid_consecutive_stop=_int(implied, "zero_bid_consecutive_stop"),
+            min_strip_strikes=_int(implied, "min_strip_strikes"),
+            binomial_steps=_int(implied, "binomial_steps"),
+            settlement_tz=_str(implied, "settlement_tz"),
+            settlement_weekly_local=_str(implied, "settlement_weekly_local"),
+            settlement_standard_local=_str(implied, "settlement_standard_local"),
         ),
         realized=RealizedConfig(
             grid_interval_s=_int(realized, "grid_interval_s"),

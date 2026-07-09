@@ -71,8 +71,12 @@ Every module obeys these. Changing any of them requires an ADR in `docs/decision
 16. **Quote filters** (chains): drop bid ≤ 0, crossed (ask ≤ bid), and stale rows —
     every filter logs rows in / rows out / reason.
 17. **The scraper snapshot time** for the forward-collected panel is fixed at one
-    time-of-day (15:45–16:00 ET target) and recorded per row; mixed-time snapshots are
-    never merged silently.
+    time-of-day and recorded per row; mixed-time snapshots are never merged silently.
+    *Amended (Phase 3):* the primary snapshot runs mid-morning US time (21:45
+    Bangkok ≈ 09:45/10:45 ET) because the post-close delayed-quote state for FXE
+    was observed frozen with zero-bid OTM wings (2026-07-08), which is unusable
+    for MFIV; a 05:00 Bangkok fallback run still catches any missed day. The
+    per-row `quote_time` is authoritative.
 
 ## Signals and hygiene
 

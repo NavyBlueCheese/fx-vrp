@@ -35,3 +35,14 @@ keys the snapshot date, and both fetch time and quote time are stored per row.
 - A missed scrape day is a permanent hole in the forward panel; the scheduled task
   uses catch-up-on-boot semantics to minimise misses, and gaps are reported, not
   filled.
+
+## Addendum (Phase 3): snapshot timing
+
+The first real FXE snapshot (2026-07-08, delayed-feed state frozen at 11:44 ET)
+carried zero-bid OTM wings on every expiry — ITM sides quoted, OTM strip empty —
+making MFIV impossible for that day and demonstrating that snapshot timing is
+first-order for thin ETF chains. The scrape task now fires twice daily
+(idempotent per quote date): 21:45 Bangkok (≈ 09:45/10:45 ET, live US session —
+primary) and 05:00 Bangkok (fallback/catch-up). Term selection also runs over
+*usable* expiries only (`min_strip_strikes`), because near-term FXE expiries can
+have no OTM bids at all — plausibly one reason CBOE decommissioned EVZ.
