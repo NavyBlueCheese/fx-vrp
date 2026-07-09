@@ -1,0 +1,25 @@
+# data is never committed; `make data` reproduces it
+data/
+
+# assistant-local files, never published
+CLAUDE.md
+.claude/
+
+# python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+
+# notebooks are exploratory; outputs stripped by pre-commit
+notebooks/.ipynb_checkpoints/
+
+# OS noise
+Thumbs.db
+.DS_Store
