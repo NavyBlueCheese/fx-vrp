@@ -42,9 +42,7 @@ def clean_chain(
     n_input = frame.height
     dropped: dict[str, int] = {}
 
-    step = frame.filter(
-        (pl.col("bid") > cfg.min_bid) & (pl.col("ask") > pl.col("bid"))
-    )
+    step = frame.filter((pl.col("bid") > cfg.min_bid) & (pl.col("ask") > pl.col("bid")))
     dropped["not_two_sided"] = n_input - step.height
     log_filter(
         logger,
@@ -57,9 +55,7 @@ def clean_chain(
     n_before = step.height
     step = step.with_columns(
         (pl.col("expiry") - pl.lit(asof)).dt.total_days().alias("days_to_expiry")
-    ).filter(
-        pl.col("days_to_expiry").is_between(cfg.min_days_to_expiry, cfg.max_days_to_expiry)
-    )
+    ).filter(pl.col("days_to_expiry").is_between(cfg.min_days_to_expiry, cfg.max_days_to_expiry))
     dropped["expiry_window"] = n_before - step.height
     log_filter(
         logger,

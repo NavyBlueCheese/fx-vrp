@@ -35,8 +35,16 @@ def main() -> None:
 
     session = requests.Session()
     n_days = n_skipped = n_ticks = 0
+    failed_days: list[date] = []
     for day in fx_days(start, end):
-        result = ingest_day(session, cfg, day, config.paths.raw_dir)
+        try:
+            result = ingest_day(session, cfg, day, config.paths.raw_dir)
+        except Exception:
+            # a transient failure on one day must not abort a multi-week pull;
+            # the day's parquet was not written, so the next run retries it
+            logger.exception("ingestion failed for %s; continuing", day)
+            failed_days.append(day)
+            continue
         n_days += 1
         if result.skipped:
             n_skipped += 1
@@ -51,13 +59,17 @@ def main() -> None:
             )
 
     logger.info(
-        "ingestion complete %s..%s: %d days, %d already on disk, %d new ticks",
+        "ingestion complete %s..%s: %d days, %d already on disk, %d new ticks, %d failed",
         start,
         end,
         n_days,
         n_skipped,
         n_ticks,
+        len(failed_days),
     )
+    if failed_days:
+        logger.warning("failed days (rerun to retry): %s", ", ".join(map(str, failed_days)))
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

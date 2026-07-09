@@ -50,10 +50,7 @@ def day_quality(frame: pl.DataFrame, day: date, cfg: QualityConfig, pip: float) 
         .with_columns(((pl.col("ask") - pl.col("bid")) / pip).alias("spread_pips"))
         .with_columns(
             (pl.col("ts").diff().dt.total_milliseconds() / 1_000.0).alias("gap_s"),
-            (
-                (pl.col("bid") != pl.col("bid").shift(1))
-                | (pl.col("ask") != pl.col("ask").shift(1))
-            )
+            ((pl.col("bid") != pl.col("bid").shift(1)) | (pl.col("ask") != pl.col("ask").shift(1)))
             .fill_null(True)
             .alias("quote_changed"),
         )
@@ -74,9 +71,7 @@ def day_quality(frame: pl.DataFrame, day: date, cfg: QualityConfig, pip: float) 
         median_spread_pips=_as_float(enriched["spread_pips"].median()),
         p95_spread_pips=_as_float(enriched["spread_pips"].quantile(0.95, interpolation="linear")),
         n_crossed=int(enriched.filter(pl.col("spread_pips") <= 0.0).height),
-        n_wide=int(
-            enriched.filter(pl.col("spread_pips") > cfg.max_plausible_spread_pips).height
-        ),
+        n_wide=int(enriched.filter(pl.col("spread_pips") > cfg.max_plausible_spread_pips).height),
         max_gap_s=_as_float(gaps.max()) if gaps.len() > 0 else float("nan"),
         n_gaps_reportable=int(gaps.filter(gaps > cfg.max_gap_report_s).len())
         if gaps.len() > 0

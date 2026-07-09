@@ -27,13 +27,10 @@ def parse_estr_csv(text: str) -> pl.DataFrame:
     required = {"TIME_PERIOD", "OBS_VALUE"}
     if not required.issubset(frame.columns):
         raise ValueError(f"unexpected ECB csvdata columns: {frame.columns}")
-    return (
-        frame.select(
-            pl.col("TIME_PERIOD").alias("date"),
-            pl.col("OBS_VALUE").cast(pl.Float64()).alias("rate"),
-        )
-        .sort("date")
-    )
+    return frame.select(
+        pl.col("TIME_PERIOD").alias("date"),
+        pl.col("OBS_VALUE").cast(pl.Float64()).alias("rate"),
+    ).sort("date")
 
 
 def fetch_estr(
@@ -46,8 +43,7 @@ def fetch_estr(
 ) -> pl.DataFrame:
     """Download the full €STR history from the configured start."""
     url = (
-        f"{cfg.base_url}/{cfg.estr_series}"
-        f"?format=csvdata&startPeriod={cfg.estr_start.isoformat()}"
+        f"{cfg.base_url}/{cfg.estr_series}?format=csvdata&startPeriod={cfg.estr_start.isoformat()}"
     )
     payload = get_with_retries(
         transport, url, timeout=timeout, max_retries=max_retries, backoff_s=backoff_s

@@ -45,10 +45,12 @@ def get_with_retries(
             response = transport.get(url, timeout=timeout)
             response.raise_for_status()
             return response.content
-        except Exception as error:  # noqa: BLE001 — network errors are heterogeneous
+        except Exception as error:
             last_error = error
             if attempt < max_retries:
                 wait = backoff_s * 2**attempt
-                logger.warning("GET %s failed (%s); retry %d in %.1fs", url, error, attempt + 1, wait)
+                logger.warning(
+                    "GET %s failed (%s); retry %d in %.1fs", url, error, attempt + 1, wait
+                )
                 time.sleep(wait)
     raise RuntimeError(f"GET {url} failed after {max_retries + 1} attempts") from last_error

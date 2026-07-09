@@ -21,10 +21,10 @@ from __future__ import annotations
 import lzma
 import struct
 import time
+from collections.abc import Iterator
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
-from typing import Iterator
 
 import polars as pl
 
@@ -70,9 +70,7 @@ def decode_bi5(payload: bytes, hour_start: datetime, price_scale: float) -> pl.D
     ts = [0] * n
     bid = [0.0] * n
     ask = [0.0] * n
-    for i, (ms, ask_raw, bid_raw, _ask_vol, _bid_vol) in enumerate(
-        _TICK_STRUCT.iter_unpack(raw)
-    ):
+    for i, (ms, ask_raw, bid_raw, _ask_vol, _bid_vol) in enumerate(_TICK_STRUCT.iter_unpack(raw)):
         ts[i] = base_ms + ms
         ask[i] = ask_raw * price_scale
         bid[i] = bid_raw * price_scale
