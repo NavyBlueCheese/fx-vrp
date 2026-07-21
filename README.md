@@ -43,11 +43,11 @@ Requires [uv](https://docs.astral.sh/uv/). `data/` is never committed (everythin
 rebuilt from public sources)
 
 ```sh
-uv sync                 # environment (Python 3.11+, locked)
-make test               # unit tests + property tests against simulated ground truth
-make data-sample        # bounded data pull: FRED + ECB + one month of ticks + chains
-make data               # full 2007-2025 tick ingestion (long; resumable)
-make quality-report     # data-quality report -> docs/reports/
+uv sync                 
+make test               
+make data-sample      
+make data              
+make quality-report    
 ```
 
 Without `make` on Windows, each target is a one-liner documented in the `Makefile`.
