@@ -10,16 +10,6 @@ gap, but the **gamma-weighted** gap
 Π ≈ ∫₀ᵀ ½ Γᵤ Sᵤ² (σ²_implied − σ²_realised,u) du ,
 ```
 
-so you can be exactly right about 30-day variance and still lose money. This project
-measures both objects on EUR/USD, which is the implied side from the CBOE EVZ index and FXE
-option chains, the realised side from Dukascopy tick data with real bid/ask spreads,
-and decomposes every trade's P&L into variance gap, discrete hedging error, option
-spread cost, spot spread cost, and carry, with the decomposition reconciled to the
-total as a unit test.
-
-*Headline figure (hedging-error std ~ n^(-1/2) vs. linear transaction cost, and the
-empirically optimal rehedge frequency) lands here at Phase 5.*
-
 ## Status
 
 | Phase | Deliverable | State |
@@ -37,36 +27,3 @@ to contain no currency ETFs at all, and CBOE decommissioned the EVZ index on
 implied series, while a daily scraper collects the live FXE surface going forward, which is
 the only continuation of the discontinued index. Details: `docs/data_availability.md`.
 
-## Reproduce
-
-Requires [uv](https://docs.astral.sh/uv/). `data/` is never committed (everything is
-rebuilt from public sources)
-
-```sh
-uv sync                 # environment (Python 3.11+, locked)
-make test               # unit tests + property tests against simulated ground truth
-make data-sample        # bounded data pull: FRED + ECB + one month of ticks + chains
-make data               # full 2007-2025 tick ingestion (long; resumable)
-make quality-report     # data-quality report -> docs/reports/
-```
-
-Without `make` on Windows, each target is a one-liner documented in the `Makefile`.
-
-## Layout
-
-```
-configs/default.yaml    every numeric assumption in the project, in one place
-docs/                   data availability, fixed conventions, ADRs, quality reports
-src/fxvrp/simulate/     GBM / Heston / Merton / microstructure ground-truth worlds
-src/fxvrp/data/         Dukascopy ticks, FRED & ECB rates, CBOE chain scraper
-src/fxvrp/realized/     RV / TSRV / realised kernel / bipower / BNS jump test / semivariance
-src/fxvrp/implied/      Black-Scholes / American binomial / MFIV (VIX methodology)
-tests/                  every estimator validated against a world with a known answer
-scripts/                one entry point per pipeline step / paper figure
-```
-
-## Data sources
-
-Dukascopy EURUSD ticks (bid & ask, 2007 ->), FRED (`EVZCLS`, `VIXCLS`, `DFF`,
-`EONIARATE`), ECB Data Portal (€STR), CBOE delayed quotes (FXE, SPX chains).
-All free; access details and quality findings in `docs/data_availability.md`.
